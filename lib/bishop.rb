@@ -11,7 +11,7 @@ class Bishop < Piece
 	def get_possible_moves()
 		moves = []
 		i, j = @pos
-		for k in -8..8 do 
+		for k in -8..8 
 			m1 = [i + k, j + k]
 			m2 = [i - k, j + k]
 			moves.push(m1) if valid_move?(m1)
