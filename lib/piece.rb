@@ -1,12 +1,13 @@
 
 
 class Piece
-	attr_accessor :color, :pos
+	attr_accessor :color, :pos, :game
 
 
 	def initialize(color = nil)
 		@color = color
 		@pos = nil
+		@game = nil
 	end
 
 

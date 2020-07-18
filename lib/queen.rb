@@ -10,14 +10,57 @@ class Queen < Piece
 	def get_possible_moves()
 		i, j = @pos
 		moves = []
-		for k in -8..8
-			m1 = [i + k, j + k]
-			m2 = [i - k, j + k]
-			m3 = [i + k, j]
-			m4 = [i, j + k]
-			[m1, m2, m3, m4].each {|x| moves.push(x) if valid_move?(x)}
+
+		# Up right
+		for k in 1..7
+			moves.push([i + k, j + k]) if valid_move?([i + k, j + k])
+			break unless @game.board[i + k, j + k].nil?
 		end
-		return moves
+
+		# Down right
+		for k in 1..7
+			moves.push([i - k, j + k]) if valid_move?([i - k, j + k])
+			break unless @game.board[i - k, j + k].nil?
+		end	
+
+		# Up left
+		for k in 1..7
+			moves.push([i + k, j - k]) if valid_move?([i + k, j - k])
+			break unless @game.board[i + k, j - k].nil?
+		end	
+
+		# Down left
+		for k in 1..7
+			moves.push([i - k, j - k]) if valid_move?([i - k, j - k])
+			break unless @game.board[i - k, j - k].nil?
+		end	
+
+		# Up
+		for k in 1..7
+			moves.push([i + k, j]) if valid_move([i + k, j])
+			break unless @game.board[i + k, j].nil?
+		end
+
+		# Down
+		for k in 1..7
+			moves.push([i - k, j]) if valid_move([i - k, j])
+			break unless @game.board[i - k, j].nil?
+		end
+
+		# Left
+		for k in 1..7
+			moves.push([i, j - k]) if valid_move([i, j - k])
+			break unless @game.board[i, j - k].nil?
+		end
+
+		# Right
+		for k in 1..7
+			moves.push([i, j + k]) if valid_move([i, j + k])
+			break unless @game.board[i, j + k].nil?
+		end
+
+	return moves
+
 	end
 
 

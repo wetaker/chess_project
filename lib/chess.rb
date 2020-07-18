@@ -11,6 +11,7 @@ class Chess
 			:white_bishop => "\u2657", :white_knight => "\u2658", :white_pawn => "\u2659", 
 			:black_king => "\u265A", :black_queen => "\u265B", :black_rook => "\u265C", 
 			:black_bishop => "\u265D", :black_knight => "\u265E", :black_pawn => "\u265F"}
+		@turn = "white"
 		classical_setup()
 	end
 
@@ -34,12 +35,19 @@ class Chess
 				if @board[i][j].class.superclass.name.downcase == "piece"
 					next if @board[i][j].nil?
 					@board[i][j].pos=([i, j])
+					@board[i][j].game=(self)
 					@white_pieces.push(@board[i][j]) if @board[i][j].color == "white" 
 					@black_pieces.push(@board[i][j]) if @board[i][j].color == "black"
 				end
 			end
 		end
 	end
+
+	
+	def checkmate?()
+
+	end
+
 
 
 	def display_board()

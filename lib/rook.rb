@@ -11,11 +11,29 @@ class Rook < Piece
 	def get_possible_moves()
 		i, j = @pos
 		moves = []
-		for k in -8..8 
-			m1 = [i, j + k]
-			m2 = [i + k, j]
-			moves.push(m1) if m1.valid_move?()
-			moves.push(m2) if m2.valid_move?()
+		
+		# Up
+		for k in 1..7
+			moves.push([i + k, j]) if valid_move([i + k, j])
+			break unless @game.board[i + k, j].nil?
+		end
+
+		# Down
+		for k in 1..7
+			moves.push([i - k, j]) if valid_move([i - k, j])
+			break unless @game.board[i - k, j].nil?
+		end
+
+		# Left
+		for k in 1..7
+			moves.push([i, j - k]) if valid_move([i, j - k])
+			break unless @game.board[i, j - k].nil?
+		end
+
+		# Right
+		for k in 1..7
+			moves.push([i, j + k]) if valid_move([i, j + k])
+			break unless @game.board[i, j + k].nil?
 		end
 		return moves
 	end

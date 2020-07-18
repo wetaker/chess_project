@@ -11,12 +11,30 @@ class Bishop < Piece
 	def get_possible_moves()
 		moves = []
 		i, j = @pos
-		for k in -8..8 
-			m1 = [i + k, j + k]
-			m2 = [i - k, j + k]
-			moves.push(m1) if valid_move?(m1)
-			moves.push(m2) if valid_move?(m2)
+
+		# Up right
+		for k in 1..7
+			moves.push([i + k, j + k]) if valid_move?([i + k, j + k])
+			break unless @game.board[i + k, j + k].nil?
 		end
+
+		# Down right
+		for k in 1..7
+			moves.push([i - k, j + k]) if valid_move?([i - k, j + k])
+			break unless @game.board[i - k, j + k].nil?
+		end	
+
+		# Up left
+		for k in 1..7
+			moves.push([i + k, j - k]) if valid_move?([i + k, j - k])
+			break unless @game.board[i + k, j - k].nil?
+		end	
+
+		# Down left
+		for k in 1..7
+			moves.push([i - k, j - k]) if valid_move?([i - k, j - k])
+			break unless @game.board[i - k, j - k].nil?
+		end	
 		return moves
 	end
 
