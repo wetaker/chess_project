@@ -1,11 +1,5 @@
-require "./lib/piece.rb"
-require "./lib/bishop.rb"
-require "./lib/pawn.rb"
-require "./lib/queen.rb"
-require "./lib/king.rb"
-require "./lib/rook.rb"
-require "./lib/knight.rb"
 
+Dir["./lib/*.rb"].each {|file| require file }
 
 class Chess
 	attr_accessor :board
@@ -34,7 +28,7 @@ class Chess
 			Knight.new, Rook.new]
 		@board[7].each {|piece| piece.color=('black')}
 
-		# Initilize piece positions and create white piece / black piece tracker
+		# Initialize piece positions and create white piece / black piece lists
 		for i in 0..7
 			for j in 0..7
 				if @board[i][j].class.superclass.name.downcase == "piece"
