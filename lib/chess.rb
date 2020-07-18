@@ -1,5 +1,5 @@
 
-Dir["./lib/*.rb"].each {|file| require file }
+Dir["./lib/*.rb"].each {|file| require file unless file == "./lib/chess.rb"}
 
 class Chess
 	attr_accessor :board
@@ -47,6 +47,8 @@ class Chess
 
 	
 	def checkmate?() 
+		# {Possible King moves} + {King position} is a subset of {Possible enemy moves} <=> Checkmate
+
 		if @turn == "white" 
 			king = black_pieces.select {|piece| piece.class.name.downcase == "king"}
 			king_moves = king.get_possible_moves() + king.pos
@@ -61,6 +63,16 @@ class Chess
 			return false
 		end
 	end	
+
+
+	def move(start, final)
+		x1, y1 = start
+		x2, y2 = final
+		piece = @board[x1, y1]
+		@board[x1, y1] = nil
+		@board[x2, y2] = piece
+		piece.pos=([x2, y2])
+	end
 
 
 
@@ -80,8 +92,6 @@ class Chess
 end
 
 game = Chess.new()
-puts "test"
 game.display_board()
-p game.board[1][0].class
 
 
