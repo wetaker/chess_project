@@ -43,10 +43,24 @@ class Chess
 		end
 	end
 
-	
-	def checkmate?()
 
-	end
+
+	
+	def checkmate?() 
+		if @turn == "white" 
+			king = black_pieces.select {|piece| piece.class.name.downcase == "king"}
+			king_moves = king.get_possible_moves() + king.pos
+			danger = white_pieces.reduce([]) {|accum, piece| accum += piece.get_possible_moves()}
+			return true if (king_moves - danger).empty?
+			return false
+		else
+			king = white_pieces.select {|piece| piece.class.name.downcase == "king"}
+			king_moves = king.get_possible_moves() + king.pos
+			danger = black_pieces.reduce([]) {|accum, piece| accum += piece.get_possible_moves()}
+			return true if (king_moves - danger).empty?
+			return false
+		end
+	end	
 
 
 
