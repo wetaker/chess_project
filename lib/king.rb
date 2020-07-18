@@ -1,8 +1,9 @@
 
 
-class Knight < Piece
+class King < Piece
+
 	def initialize()
-		super()
+
 
 	end
 

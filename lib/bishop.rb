@@ -1,9 +1,9 @@
+require "./lib/piece.rb"
 
-
-class Bishop
+class Bishop < Piece
 
 	def initialize()
-
+		super()
 
 	end
 

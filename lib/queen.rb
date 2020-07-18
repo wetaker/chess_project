@@ -1,9 +1,9 @@
 
 
-class Queen
+class Queen < Piece
 
-	def initialize()
-
+	def initialize()	
+		super()
 	end
 
 

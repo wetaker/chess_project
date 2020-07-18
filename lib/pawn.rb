@@ -1,7 +1,8 @@
 
-class Pawn
+class Pawn < Piece
 
-	def initialize()
+	def initialize(color)
+		super(color)
 
 
 	end
