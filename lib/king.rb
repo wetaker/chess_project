@@ -18,6 +18,7 @@ class King < Piece
 			m4 = [i, j + k]
 			[m1, m2, m3, m4].each {|move| moves.append(move) if valid_move?(move)}
 		end
+		moves.select! {|move| @game.board[move[0]][move[1]].nil?}
 		return moves
 	end
 
