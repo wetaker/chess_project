@@ -120,16 +120,22 @@ class Chess
 	def display_board()
 		for i in 0..7
 			for j in 0..7
-				next if @board[7-i][j].nil?
+				if @board[7-i][j].nil?
+					print "  "
+					next
+				end
 				piece = @board[7-i][j]
 				print(@symbols["#{piece.color}_#{piece.class.name.downcase}".to_sym])
 				print(" ")
 			end
-			puts ' '
+			puts ''
 		end
 	end
+
 end
+
+
 
 game = Chess.new()
 game.display_board()
-game.board.each {|row| row.each {|square| p square.pos unless square.nil?}}
+game.play_game()
