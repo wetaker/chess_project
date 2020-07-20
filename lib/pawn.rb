@@ -34,7 +34,10 @@ class Pawn < Piece
 
 
 		moves = moves.select {|move| valid_move?(move)}
-
+		return moves.select do |move|
+			square = @game.board[move[0]][move[1]]
+			!square.nil? && square.color == color ? false : true
+		end
 	end
 
 end

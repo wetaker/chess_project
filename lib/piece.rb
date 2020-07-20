@@ -18,4 +18,12 @@ class Piece
 		return true
 	end
 
+	def to_s()
+		return self.class.name
+
+	end
+
+
+
+
 end

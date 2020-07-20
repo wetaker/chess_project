@@ -25,4 +25,5 @@ class King < Piece
 
 
 
+
 end

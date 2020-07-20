@@ -49,15 +49,14 @@ class Chess
 	
 	def checkmate?() 
 		# {Possible King moves} + {King position} is a subset of {Possible enemy moves} <=> Checkmate
-
 		if @turn == "white" 
-			king = @black_pieces.select {|piece| piece.class.name.downcase == "king"}
+			king = (@black_pieces.select {|piece| piece.class.name.downcase == "king"})[0]
 			king_moves = king.get_possible_moves() + king.pos
 			danger = @white_pieces.reduce([]) {|accum, piece| accum += piece.get_possible_moves()}
 			return true if (king_moves - danger).empty?
 			return false
 		else
-			king = @white_pieces.select {|piece| piece.class.name.downcase == "king"}
+			king = @white_pieces.select {|piece| piece.class.name.downcase == "king"}[0]
 			king_moves = king.get_possible_moves() + king.pos
 			danger = @black_pieces.reduce([]) {|accum, piece| accum += piece.get_possible_moves()}
 			return true if (king_moves - danger).empty?
@@ -81,7 +80,8 @@ class Chess
 			start, final = get_move()
 			move(start, final)
 			display_board()
-			# @game_over = true if checkmate?()
+			@game_over = true if checkmate?()
+			"#{@turn} wins!" if @game_over
 			@turn = @turn == "white" ? "black" : "white"
 		end
 	end
@@ -118,8 +118,12 @@ class Chess
 	end
 
 	def display_board()
-		for i in 0..7
+		for i in 0..8
 			for j in 0..7
+				if i == 8 
+					print("#{j} ")
+					next
+				end
 				if @board[7-i][j].nil?
 					print "  "
 					next
@@ -128,7 +132,7 @@ class Chess
 				print(@symbols["#{piece.color}_#{piece.class.name.downcase}".to_sym])
 				print(" ")
 			end
-			puts ''
+			puts "#{7-i}"
 		end
 	end
 
