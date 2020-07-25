@@ -2,7 +2,7 @@
 Dir["./lib/*.rb"].each {|file| require file unless file == "./lib/chess.rb"}
 
 class Chess
-	attr_accessor :board
+	attr_accessor :board, :white_pieces, :black_pieces
 	def initialize()
 		@board = Array.new(8) {Array.new(8)}
 		@black_pieces = []
@@ -79,6 +79,8 @@ class Chess
 			"#{@turn} wins!" if @game_over
 			@turn = @turn == "white" ? "black" : "white"
 		end
+		puts @turn == "white" ? "Black wins by checkmate!" : "White wins by checkmate!"
+
 	end
 
 	def get_move()
@@ -155,7 +157,6 @@ class Chess
 		p (king_moves - threat)
 		return false unless (king_moves - threat).empty?
 
-		puts("TEST")
 		# Try each defending move and check if King is safe.
 		defenders.each do |defender|
 

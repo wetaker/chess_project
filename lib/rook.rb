@@ -8,7 +8,7 @@ class Rook < Piece
 	end
 
 
-	def get_possible_moves()
+	def get_possible_moves(protecting: false)
 		i, j = @pos
 		moves = []
 
@@ -36,10 +36,21 @@ class Rook < Piece
 			break unless @game.board[i][j + k].nil?
 		end
 		
-		return moves.select do |move|
-			square = @game.board[move[0]][move[1]]
-			!square.nil? && square.color == color ? false : true
-	end
+		# return moves.select do |move|
+		# 	square = @game.board[move[0]][move[1]]
+		# 	!square.nil? && square.color == color ? false : true
+		# end
+
+		# Removes positions of allied pieces as the Rook cannot move there.
+		unless protecting
+			return moves.select do |move|
+				square = @game.board[move[0]][move[1]]
+				!square.nil? && square.color == @color ? false : true
+			end
+		end
+
+		# Includes allied piece positions that the Rook protects but cannot move to.
+		return moves
 	end
 
 
