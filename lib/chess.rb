@@ -46,31 +46,13 @@ class Chess
 
 
 
-	
-	def checkmate?() 
-		# {Possible King moves} + {King position} is a subset of {Possible enemy moves} <=> Checkmate
-		if @turn == "white" 
-			king = (@black_pieces.select {|piece| piece.class.name.downcase == "king"})[0]
-			king_moves = king.get_possible_moves() + king.pos
-			danger = @white_pieces.reduce([]) {|accum, piece| accum += piece.get_possible_moves()}
-			return true if (king_moves - danger).empty?
-			return false
-		else
-			king = @white_pieces.select {|piece| piece.class.name.downcase == "king"}[0]
-			king_moves = king.get_possible_moves() + king.pos
-			danger = @black_pieces.reduce([]) {|accum, piece| accum += piece.get_possible_moves()}
-			return true if (king_moves - danger).empty?
-			return false
-		end
-	end	
 
-	
 
 	def move(start, final)
-		p @white_pieces.length
 		x1, y1 = start
 		x2, y2 = final
 		piece = @board[x1][y1]
+		eaten = @board[x2][y2]
 
 		if !@board[x2][y2].nil?
 			if @board[x2][y2].color == "white"
@@ -78,14 +60,13 @@ class Chess
 			else
 				@black_pieces.delete(@board[x2][y2])
 			end
-			p @white_pieces.length
-
 		end
 
 		@board[x1][y1] = nil
 		@board[x2][y2] = piece
-		piece.pos = ([x2, y2])
+		piece.pos=([x2, y2])
 
+		return eaten
 	end
 
 
@@ -150,6 +131,58 @@ class Chess
 		end
 	end
 
+	def get_threat(arr)
+		arr.reduce([]) {|accum, piece| accum.concat(piece.get_possible_moves())}
+	end
+
+
+	def checkmate?()
+
+		if @turn == "white"
+			king = @black_pieces.select {|piece| piece.class.name == "King"}[0]
+			attackers = @white_pieces
+			defenders = @black_pieces
+		else
+			king =@white_pieces.select {|piece| piece.class.name == "King"}[0]
+			attackers = @black_pieces
+			defenders = @white_pieces
+		end
+
+		king_moves = king.get_possible_moves() + [king.pos]
+		threat = get_threat(attackers)
+
+		# King has a move => Return false
+		p (king_moves - threat)
+		return false unless (king_moves - threat).empty?
+
+		puts("TEST")
+		# Try each defending move and check if King is safe.
+		defenders.each do |defender|
+
+			original_pos = defender.pos
+
+			defender.get_possible_moves().each do |move|
+
+				eaten = move(defender.pos, move)
+
+				# Calculate attacking threat and king moves given the new board
+				king_moves = king.get_possible_moves() + [king.pos]
+				threat = get_threat(attackers).uniq
+
+				# Not checkmate if King is no longer under attack.
+				return false unless threat.include?(king.pos)
+
+				# Restore board to original state after trying each move.
+				move(move, original_pos)
+				@board[move[0]][move[1]] = eaten
+				@white_pieces.push(eaten) if !eaten.nil? && eaten.color == "white"
+				@black_pieces.push(eaten) if !eaten.nil? && eaten.color == "black"
+			end
+		end
+		# Tried all defending moves, King could not be saved. Return true.
+		return true
+
+	end
 
 
 end
