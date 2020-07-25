@@ -64,14 +64,28 @@ class Chess
 		end
 	end	
 
+	
 
 	def move(start, final)
+		p @white_pieces.length
 		x1, y1 = start
 		x2, y2 = final
 		piece = @board[x1][y1]
+
+		if !@board[x2][y2].nil?
+			if @board[x2][y2].color == "white"
+				@white_pieces.delete(@board[x2][y2])
+			else
+				@black_pieces.delete(@board[x2][y2])
+			end
+			p @white_pieces.length
+
+		end
+
 		@board[x1][y1] = nil
 		@board[x2][y2] = piece
-		piece.pos=([x2, y2])
+		piece.pos = ([x2, y2])
+
 	end
 
 
@@ -135,6 +149,8 @@ class Chess
 			puts "#{7-i}"
 		end
 	end
+
+
 
 end
 
