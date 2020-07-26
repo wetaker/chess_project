@@ -100,8 +100,8 @@ class Chess
 			return get_move()
 		end
 			
-		puts "Pieces position is #{piece.pos}"
-		puts "Possible moves are #{piece.get_possible_moves()}"
+		puts "Pieces position is #{to_chess_notation(piece.pos)}"
+		puts "Possible moves are #{piece.get_possible_moves().map{|x| to_chess_notation(x)}}"
 		puts "Where do you want the #{piece.class.name} to move?"
 		move = gets.chomp.split('')
 		move = [dict[move[0]], move[1]].map {|x| x.to_i - 1}
@@ -185,6 +185,22 @@ class Chess
 
 	end
 
+	def to_chess_notation(arr)
+		dict = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "G" => 7, "H" => 8}.invert
+
+		# Deep clone the array
+		arr = arr.dup
+
+		# Swap elements
+		arr[0], arr[1] = arr[1], arr[0]
+
+		# Convert first element to letter
+		arr[0] = dict[arr[0]]
+
+		return arr
+
+
+	end
 
 end
 
