@@ -13,6 +13,7 @@ class Chess
 			:black_bishop => "\u265D", :black_knight => "\u265E", :black_pawn => "\u265F"}
 		@turn = "white"
 		@game_over = false
+		@check = false
 		classical_setup()
 	end
 
@@ -75,6 +76,7 @@ class Chess
 			start, final = get_move()
 			move(start, final)
 			display_board()
+			puts ("Check!") if check?()
 			@game_over = true if checkmate?()
 			"#{@turn} wins!" if @game_over
 			@turn = @turn == "white" ? "black" : "white"
@@ -86,7 +88,7 @@ class Chess
 	def get_move()
 		dict = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "G" => 7, "H" => 8}
 
-		puts "#{@turn}'s turn to play. Enter which piece you would like to move (Like E4)."
+		puts "#{@turn}'s turn to play. Enter which piece you would like to move."
 		to_move = gets.chomp.split('')
 		to_move = [dict[to_move[0]], to_move[1]].map {|x| x.to_i - 1}
 		to_move[0], to_move[1] = to_move[1], to_move[0]
@@ -109,6 +111,9 @@ class Chess
 
 		if !piece.get_possible_moves().include?(move)
 			puts "Sorry that's an illegal move. Try again."
+			return get_move()
+		elsif try_move(to_move, move){check?()}
+			puts "You cannot put or leave your King in check!"
 			return get_move()
 		end
 		return to_move, move
@@ -145,7 +150,7 @@ class Chess
 			attackers = @white_pieces
 			defenders = @black_pieces
 		else
-			king =@white_pieces.select {|piece| piece.class.name == "King"}[0]
+			king = @white_pieces.select {|piece| piece.class.name == "King"}[0]
 			attackers = @black_pieces
 			defenders = @white_pieces
 		end
@@ -154,7 +159,6 @@ class Chess
 		threat = get_threat(attackers)
 
 		# King has a move => Return false
-		p (king_moves - threat)
 		return false unless (king_moves - threat).empty?
 
 		# Try each defending move and check if King is safe.
@@ -185,6 +189,27 @@ class Chess
 
 	end
 
+
+
+	def check?()
+		if @turn == "white"
+			king = @black_pieces.select {|piece| piece.class.name == "King"}[0]
+			attackers = @white_pieces
+			defenders = @black_pieces
+		else
+			king = @white_pieces.select {|piece| piece.class.name == "King"}[0]
+			attackers = @black_pieces
+			defenders = @white_pieces
+		end
+
+		threat = get_threat(attackers)
+
+		return true if threat.include?(king.pos)
+		return false
+
+	end
+
+
 	def to_chess_notation(arr)
 		dict = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "G" => 7, "H" => 8}.invert
 
@@ -192,14 +217,31 @@ class Chess
 		arr = arr.dup
 
 		# Swap elements
-		arr[0], arr[1] = arr[1], arr[0]
+		arr[0], arr[1] = arr[1]+1, arr[0]+1
 
 		# Convert first element to letter
 		arr[0] = dict[arr[0]]
 
 		return arr
+	end
 
+	def try_move(start, final, &block)
 
+		# Make the move
+		eaten = move(start, final)
+
+		# Yield to block
+		@turn = @turn == "white" ? "black" : "white"
+		result = yield
+		@turn = @turn == "white" ? "black" : "white"
+
+		# Restore board to original state after trying each move.
+		move(final, start)
+		@board[final[0]][final[1]] = eaten
+		@white_pieces.push(eaten) if !eaten.nil? && eaten.color == "white"
+		@black_pieces.push(eaten) if !eaten.nil? && eaten.color == "black"
+
+		return result
 	end
 
 end
