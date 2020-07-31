@@ -49,9 +49,11 @@ class Bishop < Piece
 			end
 		end
 
+
 		# Includes allied piece positions that the Bishop protects but cannot move to.
 		return moves
 	end
+
 
 
 

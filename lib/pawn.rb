@@ -37,11 +37,12 @@ class Pawn < Piece
 
 		# Removes positions of allied pieces as the Pawn cannot move there.
 		unless protecting
-			return moves.select do |move|
+			moves = moves.select do |move|
 				square = @game.board[move[0]][move[1]]
 				!square.nil? && square.color == @color ? false : true
 			end
 		end
+
 
 		# Includes allied piece positions that the Pawn protects but cannot move to.
 		return moves

@@ -74,10 +74,11 @@ class Chess
 	def play_game()
 		until @game_over
 			start, final = get_move()
+			return if start == false
 			move(start, final)
 			display_board()
-			puts ("Check!") if check?()
-			@game_over = true if checkmate?()
+			print ("Check") if check?()
+			(puts "mate!"; @game_over = true) if checkmate?()
 			"#{@turn} wins!" if @game_over
 			@turn = @turn == "white" ? "black" : "white"
 		end
@@ -88,12 +89,24 @@ class Chess
 	def get_move()
 		dict = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "G" => 7, "H" => 8}
 
+		# Get which piece to move
 		puts "#{@turn}'s turn to play. Enter which piece you would like to move."
-		to_move = gets.chomp.split('')
-		to_move = [dict[to_move[0]], to_move[1]].map {|x| x.to_i - 1}
-		to_move[0], to_move[1] = to_move[1], to_move[0]
-		piece = @board[to_move[0]][to_move[1]]
+		to_move = gets.chomp
+		case to_move
+		when 'save'
+			self.save_game()
+			return false, false
+		when 'clear'
+			self.clear_game()
+			return false, false
+		else
+			to_move = to_move.split('')
+			to_move = [dict[to_move[0]], to_move[1]].map {|x| x.to_i - 1}
+			to_move[0], to_move[1] = to_move[1], to_move[0]
+			piece = @board[to_move[0]][to_move[1]]
+		end
 
+		# Handling invalid piece selections
 		if piece.nil? || piece.color != @turn
 			puts "You don't have a piece on that square! Try again."
 			return get_move()
@@ -102,6 +115,7 @@ class Chess
 			return get_move()
 		end
 			
+		# Where should the piece move.
 		puts "Pieces position is #{to_chess_notation(piece.pos)}"
 		puts "Possible moves are #{piece.get_possible_moves().map{|x| to_chess_notation(x)}}"
 		puts "Where do you want the #{piece.class.name} to move?"
@@ -109,6 +123,7 @@ class Chess
 		move = [dict[move[0]], move[1]].map {|x| x.to_i - 1}
 		move[0], move[1] = move[1], move[0]
 
+		# Check that the move is legal
 		if !piece.get_possible_moves().include?(move)
 			puts "Sorry that's an illegal move. Try again."
 			return get_move()
@@ -120,6 +135,7 @@ class Chess
 	end
 
 	def display_board()
+	# Displays the board with unicode characters in terminal
 		for i in 0..8
 			for j in 0..7
 				if i == 8 
@@ -244,10 +260,37 @@ class Chess
 		return result
 	end
 
+	def Chess.load_game()
+		File.open('game') do |f|
+			return Marshal.load(f)
+		end
+	end
+
+	def save_game()
+		File.open('game', 'w+') do |f|
+			Marshal.dump(self, f)
+		end
+	end
+
+	def clear_game()
+		begin 
+			File.delete('game')
+		rescue
+		end
+	end
+
+
 end
 
-
-
-game = Chess.new()
+begin 
+	game = Chess.load_game()
+rescue
+	game = Chess.new()
+end
 game.display_board()
 game.play_game()
+
+
+# game = Chess.new()
+# game.display_board()
+# game.play_game()
